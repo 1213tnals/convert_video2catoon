@@ -17,6 +17,7 @@ threshold1 = 500
 threshold2 = 1200
 aperture_size = 5
 img_select = -1
+alpha = 0.5
 
 # Get FPS and calculate the waiting time in millisecond
 fps = cap.get(cv.CAP_PROP_FPS)
@@ -30,7 +31,11 @@ while True:
     if not ret:
         break
 
+    # Convert video to video_gray
     video_gray = cv.cvtColor(video, cv.COLOR_BGR2GRAY)
+
+    # Get the Canny edge image
+    edge = cv.Canny(video_gray, threshold1, threshold2, apertureSize=aperture_size)
 
     # Apply thresholding to the image
     # _, binary_user = cv.threshold(video_gray, threshold, 255, img_threshold_type)
@@ -42,17 +47,27 @@ while True:
     # drawText(binary_otsu, f'Otsu Threshold: {threshold_otsu}')
     adaptive_type_text = 'M' if adaptive_type == cv.ADAPTIVE_THRESH_MEAN_C else 'G'
     drawText(binary_adaptive, f'Type: {adaptive_type_text}, BlockSize: {adaptive_blocksize}, C: {adaptive_C}')
-    # merge = np.vstack((np.hstack((video_gray, binary_user)),
-    #                    np.hstack((binary_otsu, binary_adaptive))))
-    # cv.imshow('Thresholding: Original | User | Otsu | Adaptive', merge)
+
+    # Convert binary data to color data step1
+    binary_adaptive = cv.cvtColor(binary_adaptive, cv.COLOR_GRAY2BGR)
+
+    # Convert binary data to color data step2
+    binary_adaptive = cv.resize(binary_adaptive, (video.shape[1], video.shape[0]))
+
+    # Apply alpha blending (you should make 2 data to color (type) data)
+    blend = (alpha * binary_adaptive + (1 - alpha) * video).astype(np.uint8) # Alternative) cv.addWeighted()
 
     # Show the image
-    cv.imshow('Video Player', binary_adaptive)
+    cv.imshow('Video Player', blend)
 
     # Terminate if the given key is ESC
     key = cv.waitKey(wait_msec)
     if key == 27: # ESC
         break
+    elif key == ord('+') or key == ord('='):
+        alpha = min(alpha + 0.1, 1)
+    elif key == ord('-') or key == ord('_'):
+        alpha = max(alpha - 0.1, 0)
 
 # release cap object and close all windows
 cap.release()
