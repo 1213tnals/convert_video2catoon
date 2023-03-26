@@ -16,9 +16,10 @@ this is convert_video2catoon, you can change nomal video to catoon video
 **b** 키를 누르면 현재 나오는 웹캠의 영상을 다음과 같이 카툰화 할 수 있습니다.   
 색 변화가 큰 곳에 효과를 내고 싶을 때 사용하면 좋습니다.    
    
-## 3. 키보드 c 키: 적응형 스레쉬 홀드로 걸러진 이미지를 사용한 것 :bear:   
+## 3. 키보드 c 키: 적응형 스레쉬 홀드로 걸러진 이미지를 사용한 것(ChatGPT가 추천해준 방법 적용됨!) :bear:   
 ![mode_b](README_img/c.png)   
 **c** 키를 누르면 현재 나오는 웹캠의 영상을 다음과 같이 카툰화 할 수 있습니다.   
 거친 느낌의 이미지를 만들고 싶을 때 사용하면 좋습니다.   
+_이 방법은 ChatGPT가 제안한 방법을 기반으로 만들어진 모드입니다(a,b 모드와 비교)_
 
 :smiley: [유튜브를 통해서 작동 전체 영상보기](https://youtu.be/YsgHJm5JUzw)   
