@@ -47,7 +47,7 @@ while True:
         video_edge = cv.Canny(binary_adaptive, threshold1, threshold2, apertureSize=aperture_size)
         video_changed = cv.morphologyEx(video_edge, cv.MORPH_DILATE, np.ones((2, 2), dtype=np.uint8), iterations=n_iterations)
     elif(mode == 2):
-        video_edge = cv.adaptiveThreshold(video_gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 9, 9)
+        video_edge = cv.adaptiveThreshold(video_gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 9, 2)
         video_changed = video_edge
 
     # Convert binary data to color data step1
@@ -60,8 +60,8 @@ while True:
     blend = (alpha * video_changed + (1 - alpha) * video).astype(np.uint8)
 
     # Show the image
-    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (255,255,255), thickness=2)
-    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), thickness=1)
+    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (255,255,255), thickness=4)
+    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), thickness=2)
     cv.imshow('Cartoon Player', blend)
 
     # Terminate if the given key is ESC
