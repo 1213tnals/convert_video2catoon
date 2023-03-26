@@ -1,16 +1,14 @@
 import cv2 as cv
 import numpy as np
-from Sobel_edge import drawText
 
 # get webcam data
 cap = cv.VideoCapture(0)
-
-img_threshold_type = cv.THRESH_BINARY_INV
 
 # Initialize control parameters
 adaptive_type = cv.ADAPTIVE_THRESH_MEAN_C
 adaptive_blocksize = 99
 adaptive_C = 4
+img_threshold_type = cv.THRESH_BINARY_INV
 threshold1 = 500
 threshold2 = 1500
 aperture_size = 5
@@ -18,6 +16,7 @@ img_select = -1
 alpha = 0.4
 n_iterations = 1
 mode = 0
+info = "mode: a, b, c"
 
 # Get FPS and calculate the waiting time in millisecond
 fps = cap.get(cv.CAP_PROP_FPS)
@@ -58,9 +57,11 @@ while True:
     video_changed = cv.resize(video_changed, (video.shape[1], video.shape[0]))
 
     # Apply alpha blending (you should make 2 data to color (type) data)
-    blend = (alpha * video_changed + (1 - alpha) * video).astype(np.uint8) # Alternative) cv.addWeighted()
+    blend = (alpha * video_changed + (1 - alpha) * video).astype(np.uint8)
 
     # Show the image
+    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (255,255,255), thickness=2)
+    cv.putText(blend, info, (10, 35), cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), thickness=1)
     cv.imshow('Cartoon Player', blend)
 
     # Terminate if the given key is ESC
@@ -88,5 +89,4 @@ while True:
     
 # release cap object and close all windows
 cap.release()
-cv.waitKey(0)
 cv.destroyAllWindows()
