@@ -4,7 +4,7 @@ this is convert_video2catoon, you can change nomal video to catoon video
 실시간으로 보고 싶은 모습을 카툰화 해보세요!   
 노트북에 설치된 웹캠으로 현재의 이미지를 3가지 모드로 카툰화 할 수 있습니다.     
    
-이 카툰화 프로그램에는 ***3가지 모드(키보드 a,b,c 버튼)***가 있습니다.      
+이 카툰화 프로그램에는 ***3가지 모드(키보드 a,b,c 버튼)*** 가 있습니다.      
 
 ## 1. 키보드 a 키: 회색조 이미지에서 테두리 딴 것    
 ![mode_a](README_img/a.png)   
