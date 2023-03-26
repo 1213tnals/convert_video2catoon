@@ -88,4 +88,5 @@ while True:
     
 # release cap object and close all windows
 cap.release()
+cv.waitKey(0)
 cv.destroyAllWindows()
