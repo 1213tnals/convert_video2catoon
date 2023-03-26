@@ -8,16 +8,16 @@ cap = cv.VideoCapture(0)
 img_threshold_type = cv.THRESH_BINARY_INV
 
 # Initialize control parameters
-threshold = 127
 adaptive_type = cv.ADAPTIVE_THRESH_MEAN_C
 adaptive_blocksize = 99
 adaptive_C = 4
-# Initialize control parameters
 threshold1 = 500
-threshold2 = 1200
+threshold2 = 1500
 aperture_size = 5
 img_select = -1
-alpha = 0.5
+alpha = 0.4
+n_iterations = 1
+mode = 0
 
 # Get FPS and calculate the waiting time in millisecond
 fps = cap.get(cv.CAP_PROP_FPS)
@@ -34,28 +34,27 @@ while True:
     # Convert video to video_gray
     video_gray = cv.cvtColor(video, cv.COLOR_BGR2GRAY)
 
-    # Get the Canny edge image
-    edge = cv.Canny(video_gray, threshold1, threshold2, apertureSize=aperture_size)
-
     # Apply thresholding to the image
-    # _, binary_user = cv.threshold(video_gray, threshold, 255, img_threshold_type)
-    # threshold_otsu, binary_otsu = cv.threshold(video_gray, threshold, 255, img_threshold_type | cv.THRESH_OTSU)
     binary_adaptive = cv.adaptiveThreshold(video_gray, 255, adaptive_type, img_threshold_type, adaptive_blocksize, adaptive_C)
 
-    # Show the image and its thresholded result
-    # drawText(binary_user, f'Threshold: {threshold}')
-    # drawText(binary_otsu, f'Otsu Threshold: {threshold_otsu}')
-    adaptive_type_text = 'M' if adaptive_type == cv.ADAPTIVE_THRESH_MEAN_C else 'G'
-    drawText(binary_adaptive, f'Type: {adaptive_type_text}, BlockSize: {adaptive_blocksize}, C: {adaptive_C}')
+    # Get the Canny edge image
+    if(mode == 0):
+        video_edge = cv.Canny(video_gray, threshold1, threshold2, apertureSize=aperture_size)
+        video_changed = cv.morphologyEx(video_edge, cv.MORPH_DILATE, np.ones((2, 2), dtype=np.uint8), iterations=n_iterations)
+    elif(mode == 1):
+        video_edge = cv.Canny(binary_adaptive, threshold1, threshold2, apertureSize=aperture_size)
+        video_changed = cv.morphologyEx(video_edge, cv.MORPH_DILATE, np.ones((2, 2), dtype=np.uint8), iterations=n_iterations)    
 
     # Convert binary data to color data step1
-    binary_adaptive = cv.cvtColor(binary_adaptive, cv.COLOR_GRAY2BGR)
+    video_changed = cv.cvtColor(video_changed, cv.COLOR_GRAY2BGR)
+    # binary_adaptive = cv.cvtColor(binary_adaptive, cv.COLOR_GRAY2BGR)
 
     # Convert binary data to color data step2
-    binary_adaptive = cv.resize(binary_adaptive, (video.shape[1], video.shape[0]))
+    video_changed = cv.resize(video_changed, (video.shape[1], video.shape[0]))
+    # binary_adaptive = cv.resize(binary_adaptive, (video.shape[1], video.shape[0]))
 
     # Apply alpha blending (you should make 2 data to color (type) data)
-    blend = (alpha * binary_adaptive + (1 - alpha) * video).astype(np.uint8) # Alternative) cv.addWeighted()
+    blend = (alpha * video_changed + (1 - alpha) * video).astype(np.uint8) # Alternative) cv.addWeighted()
 
     # Show the image
     cv.imshow('Video Player', blend)
@@ -65,10 +64,22 @@ while True:
     if key == 27: # ESC
         break
     elif key == ord('+') or key == ord('='):
-        alpha = min(alpha + 0.1, 1)
+        threshold1 += 2
     elif key == ord('-') or key == ord('_'):
-        alpha = max(alpha - 0.1, 0)
-
+        threshold1 -= 2
+    elif key == ord(']') or key == ord('}'):
+        threshold2 += 2
+    elif key == ord('[') or key == ord('{'):
+        threshold2 -= 2
+    elif key == ord('>') or key == ord('.'):
+        aperture_size = min(aperture_size + 2, 7)
+    elif key == ord('<') or key == ord(','):
+        aperture_size = max(aperture_size - 2, 3)
+    elif key == ord('a'):
+        mode = 0
+    elif key == ord('b'):
+        mode = 1
+    
 # release cap object and close all windows
 cap.release()
 cv.destroyAllWindows()
